@@ -72,6 +72,20 @@
             bottom: 0;
             width: 100%;
         }
+        #input-area {
+            display: none;
+            margin-top: 20px;
+        }
+        .entry {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        img {
+            max-width: 200px;
+            height: auto;
+        }
     </style>
 </head>
 <body>
@@ -100,13 +114,81 @@
             <p><strong>Telefon:</strong> +49 12345678910</p>
             <p><strong>Email:</strong> <a href="mailto:missingpets.vermistekatzen@gmail.com">missingpets.vermistekatzen@gmail.com</a></p>
         </div>
+
+        <button id="add-button">Hinzufügen</button>
+        <div id="input-area">
+            <input type="text" id="text-input" placeholder="Gib deinen Text ein">
+            <input type="file" id="image-input" accept="image/*">
+            <button id="done-button">Fertig</button>
+        </div>
+        <div id="output-area"></div>
     </div>
     <footer>
         <p>&copy; 2024 Vermisste Katzen. Alle Rechte vorbehalten.</p>
     </footer>
-</body>
-</html>
-</script>
 
+    <script>
+        const addButton = document.getElementById('add-button');
+        const inputArea = document.getElementById('input-area');
+        const doneButton = document.getElementById('done-button');
+        const outputArea = document.getElementById('output-area');
+
+        // Load saved entries from localStorage
+        window.onload = function() {
+            const savedEntries = JSON.parse(localStorage.getItem('entries')) || [];
+            savedEntries.forEach(entry => {
+                displayEntry(entry.text, entry.image);
+            });
+        };
+
+        // Show the input area when "Hinzufügen" is clicked
+        addButton.addEventListener('click', () => {
+            inputArea.style.display = 'block';
+        });
+
+        // Handle the "Fertig" button click
+        doneButton.addEventListener('click', () => {
+            const text = document.getElementById('text-input').value;
+            const imageFile = document.getElementById('image-input').files[0];
+
+            if (!text || !imageFile) {
+                alert('Bitte Text und Bild hinzufügen!');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                saveEntry(text, imageData);
+                displayEntry(text, imageData);
+            };
+            reader.readAsDataURL(imageFile);
+
+            inputArea.style.display = 'none';
+            document.getElementById('text-input').value = '';
+            document.getElementById('image-input').value = '';
+        });
+
+        function saveEntry(text, image) {
+            const entries = JSON.parse(localStorage.getItem('entries')) || [];
+            entries.push({ text, image });
+            localStorage.setItem('entries', JSON.stringify(entries));
+        }
+
+        function displayEntry(text, image) {
+            const entryDiv = document.createElement('div');
+            entryDiv.classList.add('entry');
+
+            const textElement = document.createElement('p');
+            textElement.textContent = text;
+
+            const imageElement = document.createElement('img');
+            imageElement.src = image;
+
+            entryDiv.appendChild(textElement);
+            entryDiv.appendChild(imageElement);
+            outputArea.appendChild(entryDiv);
+        }
+    </script>
 </body>
 </html>
