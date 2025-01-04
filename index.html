@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vermisste Katzen - Hinzufügen</title>
+    <title>Vermisste Katzen</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
             margin: 0;
             padding: 0;
+            background-color: #f9f9f9;
             position: relative;
             min-height: 100vh;
         }
@@ -23,33 +23,6 @@
             width: 80%;
             margin: 20px auto;
         }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .input-container, #finishButton {
-            margin-top: 20px;
-            display: none;
-        }
-        input[type="text"], input[type="file"] {
-            margin: 10px 0;
-            padding: 10px;
-            width: 80%;
-        }
-        .output {
-            margin-top: 30px;
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
         .cat-card {
             background-color: white;
             border: 1px solid #ddd;
@@ -61,19 +34,9 @@
             color: inherit;
             display: block;
         }
-        .cat-card:hover {
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            cursor: pointer;
-        }
         .cat-card img {
             max-width: 100%;
             border-radius: 8px;
-        }
-        .cat-card h2 {
-            margin: 10px 0;
-        }
-        .cat-card p {
-            margin: 5px 0;
         }
         .contact-box {
             background-color: white;
@@ -84,12 +47,6 @@
             text-align: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .contact-box h2 {
-            color: #ff6666;
-        }
-        .contact-box p {
-            margin: 10px 0;
-        }
         footer {
             text-align: center;
             padding: 10px 0;
@@ -99,23 +56,35 @@
             bottom: 0;
             width: 100%;
         }
+        #inputContainer {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        input[type="text"], input[type="file"] {
+            margin: 10px 0;
+            padding: 10px;
+            width: 80%;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>Vermisste Katzen - Hinzufügen</h1>
+        <h1>Vermisste Katzen</h1>
     </header>
-    <div class="container">
-        <button id="addButton">Hinzufügen</button>
 
-        <div class="input-container" id="inputContainer">
-            <input type="text" placeholder="Gib deinen Text ein" id="textInput">
-            <input type="file" id="fileInput">
-            <button id="finishButton">Fertig</button>
-        </div>
-
-        <div id="outputContainer"></div>
-
+    <div class="container" id="catContainer">
         <a href="molly-details.html" target="_blank" class="cat-card">
             <img src="katze1.jpg" alt="Bild der vermissten Katze">
             <h2>Molly</h2>
@@ -130,45 +99,71 @@
             <p><strong>Ort:</strong> München</p>
             <p><strong>Beschreibung:</strong> Whiskers ist eine graue Katze mit grünen Augen, etwas scheu und ohne Halsband.</p>
         </a>
-
-        <!-- Kontaktbox -->
-        <div class="contact-box">
-            <h2>Fragen? Kontaktieren Sie uns!</h2>
-            <p><strong>Telefon:</strong> +49 12345678910</p>
-            <p><strong>Email:</strong> <a href="mailto:missingpets.vermistekatzen@gmail.com">missingpets.vermistekatzen@gmail.com</a></p>
-        </div>
     </div>
+
+    <div style="text-align: center;">
+        <button id="addButton">Hinzufügen</button>
+    </div>
+
+    <div id="inputContainer">
+        <input type="text" id="catNameInput" placeholder="Name der Katze">
+        <input type="text" id="catDescriptionInput" placeholder="Beschreibung">
+        <input type="file" id="catImageInput">
+        <button id="finishButton">Fertig</button>
+    </div>
+
     <footer>
         <p>&copy; 2024 Vermisste Katzen. Alle Rechte vorbehalten.</p>
     </footer>
 
     <script>
+        window.onload = function() {
+            if (localStorage.getItem('cats')) {
+                const cats = JSON.parse(localStorage.getItem('cats'));
+                cats.forEach(cat => addCatCard(cat.name, cat.description, cat.image));
+            }
+        };
+
         document.getElementById('addButton').addEventListener('click', function() {
             document.getElementById('inputContainer').style.display = 'block';
             document.getElementById('addButton').style.display = 'none';
         });
 
         document.getElementById('finishButton').addEventListener('click', function() {
-            const text = document.getElementById('textInput').value;
-            const file = document.getElementById('fileInput').files[0];
+            const name = document.getElementById('catNameInput').value;
+            const description = document.getElementById('catDescriptionInput').value;
+            const imageFile = document.getElementById('catImageInput').files[0];
 
-            if (text && file) {
+            if (name && description && imageFile) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const outputContainer = document.getElementById('outputContainer');
-                    const newEntry = document.createElement('div');
-                    newEntry.classList.add('output');
-                    newEntry.innerHTML = `
-                        <h2>${text}</h2>
-                        <img src="${e.target.result}" alt="Hochgeladenes Bild">
-                    `;
-                    outputContainer.appendChild(newEntry);
+                    const image = e.target.result;
+                    addCatCard(name, description, image);
+                    saveCatToLocalStorage(name, description, image);
                 };
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(imageFile);
             } else {
-                alert("Bitte Text eingeben und ein Bild hochladen.");
+                alert("Bitte alle Felder ausfüllen und ein Bild hochladen.");
             }
         });
+
+        function addCatCard(name, description, image) {
+            const catContainer = document.getElementById('catContainer');
+            const newCatCard = document.createElement('div');
+            newCatCard.classList.add('cat-card');
+            newCatCard.innerHTML = `
+                <img src="${image}" alt="Bild der vermissten Katze">
+                <h2>${name}</h2>
+                <p>${description}</p>
+            `;
+            catContainer.appendChild(newCatCard);
+        }
+
+        function saveCatToLocalStorage(name, description, image) {
+            let cats = localStorage.getItem('cats') ? JSON.parse(localStorage.getItem('cats')) : [];
+            cats.push({ name, description, image });
+            localStorage.setItem('cats', JSON.stringify(cats));
+        }
     </script>
 </body>
 </html>
