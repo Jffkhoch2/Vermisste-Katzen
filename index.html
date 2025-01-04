@@ -72,71 +72,15 @@
             bottom: 0;
             width: 100%;
         }
-        #add-pet-btn, #admin-btn, #login-btn {
-            margin: 10px;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-        }
-        #add-pet-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-        #admin-btn {
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
-            background-color: #333;
-            color: white;
-        }
-        #login-btn {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background-color: #007BFF;
-            color: white;
-        }
-        .delete-btn {
-            display: none;
-            background-color: #FF0000;
-            color: white;
-            padding: 5px;
-            border: none;
-            cursor: pointer;
-        }
-        #cookie-banner {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            z-index: 9999;
-        }
-        #cookie-banner button {
-            background-color: #4CAF50;
+        .button {
+            display: block;
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: green;
             color: white;
             border: none;
-            padding: 10px;
             cursor: pointer;
-        }
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 9998;
-            display: none;
-        }
-        #add-pet-form {
-            display: none;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -144,28 +88,22 @@
     <header>
         <h1>Vermisste Katzen</h1>
     </header>
-
-    <button id="login-btn">Anmelden</button>
-    <button id="add-pet-btn">Hinzufügen</button>
-    <button id="admin-btn">Admin</button>
-
     <div class="container">
-        <div id="pet-list">
-            <a href="molly-details.html" target="_blank" class="cat-card">
-                <img src="katze1.jpg" alt="Bild der vermissten Katze">
-                <h2>Molly</h2>
-                <p><strong>Vermisst seit:</strong> 01. Juni 2024</p>
-                <p><strong>Ort:</strong> Berlin</p>
-                <p><strong>Beschreibung:</strong> Molly ist eine schwarz-weiße Katze, sehr zutraulich und trägt ein rotes Halsband.</p>
-            </a>
-            <a href="whiskers-details.html" target="_blank" class="cat-card">
-                <img src="katze2.jpg" alt="Bild der vermissten Katze">
-                <h2>Whiskers</h2>
-                <p><strong>Vermisst seit:</strong> 05. Juni 2024</p>
-                <p><strong>Ort:</strong> München</p>
-                <p><strong>Beschreibung:</strong> Whiskers ist eine graue Katze mit grünen Augen, etwas scheu und ohne Halsband.</p>
-            </a>
-        </div>
+        <a href="molly-details.html" target="_blank" class="cat-card">
+            <img src="katze1.jpg" alt="Bild der vermissten Katze">
+            <h2>Molly</h2>
+            <p><strong>Vermisst seit:</strong> 01. Juni 2024</p>
+            <p><strong>Ort:</strong> Berlin</p>
+            <p><strong>Beschreibung:</strong> Molly ist eine schwarz-weiße Katze, sehr zutraulich und trägt ein rotes Halsband.</p>
+        </a>
+        <a href="whiskers-details.html" target="_blank" class="cat-card">
+            <img src="katze2.jpg" alt="Bild der vermissten Katze">
+            <h2>Whiskers</h2>
+            <p><strong>Vermisst seit:</strong> 05. Juni 2024</p>
+            <p><strong>Ort:</strong> München</p>
+            <p><strong>Beschreibung:</strong> Whiskers ist eine graue Katze mit grünen Augen, etwas scheu und ohne Halsband.</p>
+        </a>
+        <button class="button" onclick="addEntry()">Hinzufügen</button>
 
         <!-- Kontaktbox -->
         <div class="contact-box">
@@ -174,88 +112,18 @@
             <p><strong>Email:</strong> <a href="mailto:missingpets.vermistekatzen@gmail.com">missingpets.vermistekatzen@gmail.com</a></p>
         </div>
     </div>
-
     <footer>
         <p>&copy; 2024 Vermisste Katzen. Alle Rechte vorbehalten.</p>
     </footer>
-
-    <div id="cookie-banner">
-        <p>Diese Website verwendet Cookies. Bitte akzeptieren Sie die Cookies, um fortzufahren.</p>
-        <button onclick="acceptCookies()">Akzeptieren</button>
-    </div>
-
-    <div id="overlay"></div>
-
-    <!-- JavaScript -->
     <script>
-        const petList = document.getElementById('pet-list');
-        const addPetBtn = document.getElementById('add-pet-btn');
-        const adminBtn = document.getElementById('admin-btn');
-        let adminMode = false;
-
-        // Add Pet Button
-        addPetBtn.addEventListener('click', () => {
-            const formHtml = `
-                <div id="add-pet-form">
-                    <label>Name des vermissten Tieres:</label><br>
-                    <input type="text" id="pet-name"><br><br>
-                    <label>Beschreibung:</label><br>
-                    <textarea id="pet-description"></textarea><br><br>
-                    <label>Bild-URL:</label><br>
-                    <input type="text" id="pet-image"><br><br>
-                    <button onclick="submitPet()">Speichern</button>
-                </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', formHtml);
-            document.getElementById('add-pet-form').style.display = 'block';
-        });
-
-        function submitPet() {
-            const name = document.getElementById('pet-name').value;
-            const description = document.getElementById('pet-description').value;
-            const imageUrl = document.getElementById('pet-image').value;
-
-            if (name && description && imageUrl) {
-                const petEntry = document.createElement('div');
-                petEntry.className = 'cat-card';
-                petEntry.innerHTML = `
-                    <h3>${name}</h3>
-                    <p>${description}</p>
-                    <img src="${imageUrl}" alt="${name}" style="max-width: 200px;">
-                    <button class="delete-btn">Löschen</button>
-                `;
-                petList.appendChild(petEntry);
-
-                petEntry.querySelector('.delete-btn').addEventListener('click', () => {
-                    petList.removeChild(petEntry);
-                });
-
-                document.getElementById('add-pet-form').remove();
-            }
+        function addEntry() {
+            const entry = document.createElement('div');
+            entry.classList.add('cat-card');
+            entry.innerHTML = `<p>Name: <input type='text' placeholder='Name'></p>
+                               <p>Beschreibung: <input type='text' placeholder='Beschreibung'></p>
+                               <p>Bild: <input type='file'></p>`;
+            document.querySelector('.container').appendChild(entry);
         }
-
-        // Admin Button
-        adminBtn.addEventListener('click', () => {
-            const password = prompt('Bitte geben Sie das Admin-Passwort ein:');
-            if (password === 'admin123') {
-                adminMode = true;
-                document.querySelectorAll('.delete-btn').forEach(btn => btn.style.display = 'inline');
-                alert('Admin-Modus aktiviert');
-            } else {
-                alert('Falsches Passwort');
-            }
-        });
-
-        // Cookies Banner
-        function acceptCookies() {
-            document.getElementById('cookie-banner').style.display = 'none';
-            document.getElementById('overlay').style.display = 'none';
-        }
-
-        // Show Overlay
-        window.onload = function() {
-            document.getElementById('overlay').style.display = 'block';
-        };
     </script>
 </body>
 </html>
