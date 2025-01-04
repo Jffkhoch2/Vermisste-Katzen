@@ -145,6 +145,25 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+        #login-form {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 10000;
+        }
+        #login-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -193,12 +212,45 @@
 
     <div id="overlay"></div>
 
+    <div id="login-form">
+        <h2>Bitte melden Sie sich an</h2>
+        <input type="email" id="email" placeholder="E-Mail" required>
+        <input type="password" id="password" placeholder="Passwort" required>
+        <button onclick="submitLogin()">Fertig</button>
+    </div>
+
     <!-- JavaScript -->
     <script>
         const petList = document.getElementById('pet-list');
         const addPetBtn = document.getElementById('add-pet-btn');
         const adminBtn = document.getElementById('admin-btn');
+        const loginBtn = document.getElementById('login-btn');
+        const loginForm = document.getElementById('login-form');
         let adminMode = false;
+
+        // Login Button
+        loginBtn.addEventListener('click', () => {
+            loginForm.style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        });
+
+        function submitLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (email && password) {
+                const userId = Date.now(); // Generate a unique user ID based on current time
+                alert(`Willkommen! Ihre Benutzer-ID ist: ${userId}`);
+
+                // Send email to missingpets.vermistekatzen@gmail.com
+                window.location.href = `mailto:missingpets.vermistekatzen@gmail.com?subject=Benutzeranmeldung&body=Benutzer-ID: ${userId}, E-Mail: ${email}`;
+
+                loginForm.style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
+            } else {
+                alert('Bitte füllen Sie alle Felder aus.');
+            }
+        }
 
         // Add Pet Button
         addPetBtn.addEventListener('click', () => {
