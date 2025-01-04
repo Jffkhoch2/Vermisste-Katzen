@@ -73,22 +73,49 @@
             width: 100%;
         }
         .button {
-            display: block;
-            margin: 20px 0;
-            padding: 10px 20px;
-            background-color: green;
+            display: inline-block;
+            background-color: #4CAF50;
             color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin: 10px;
             border: none;
-            cursor: pointer;
             border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        #addForm, #loginForm, #adminLogin, .deleteButtons {
+            display: none;
+        }
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
     <header>
         <h1>Vermisste Katzen</h1>
+        <button class="button" id="addButton">Hinzufügen</button>
+        <button class="button" id="loginButton">Anmelden</button>
     </header>
-    <div class="container">
+    <div class="container" id="missingPetsList">
         <a href="molly-details.html" target="_blank" class="cat-card">
             <img src="katze1.jpg" alt="Bild der vermissten Katze">
             <h2>Molly</h2>
@@ -103,27 +130,109 @@
             <p><strong>Ort:</strong> München</p>
             <p><strong>Beschreibung:</strong> Whiskers ist eine graue Katze mit grünen Augen, etwas scheu und ohne Halsband.</p>
         </a>
-        <button class="button" onclick="addEntry()">Hinzufügen</button>
-
-        <!-- Kontaktbox -->
-        <div class="contact-box">
-            <h2>Fragen? Kontaktieren Sie uns!</h2>
-            <p><strong>Telefon:</strong> +49 12345678910</p>
-            <p><strong>Email:</strong> <a href="mailto:missingpets.vermistekatzen@gmail.com">missingpets.vermistekatzen@gmail.com</a></p>
-        </div>
+    </div>
+    <div class="contact-box">
+        <h2>Fragen? Kontaktieren Sie uns!</h2>
+        <p><strong>Telefon:</strong> +49 12345678910</p>
+        <p><strong>Email:</strong> <a href="mailto:missingpets.vermistekatzen@gmail.com">missingpets.vermistekatzen@gmail.com</a></p>
     </div>
     <footer>
         <p>&copy; 2024 Vermisste Katzen. Alle Rechte vorbehalten.</p>
     </footer>
+    <button class="button" style="position: fixed; bottom: 10px; left: 10px;" id="adminButton">Admin</button>
+    <div id="addForm" class="popup">
+        <div class="popup-content">
+            <h2>Vermisstes Tier hinzufügen</h2>
+            <label for="name">Name:</label><br>
+            <input type="text" id="name"><br>
+            <label for="description">Beschreibung:</label><br>
+            <input type="text" id="description"><br>
+            <label for="image">Bild URL:</label><br>
+            <input type="text" id="image"><br><br>
+            <button class="button" id="finishButton">Fertig</button>
+        </div>
+    </div>
+    <div id="loginForm" class="popup">
+        <div class="popup-content">
+            <h2>Anmelden</h2>
+            <label for="email">Email:</label><br>
+            <input type="email" id="email"><br>
+            <label for="password">Passwort:</label><br>
+            <input type="password" id="password"><br><br>
+            <button class="button" id="sendLogin">Einloggen</button>
+        </div>
+    </div>
+    <div id="adminLogin" class="popup">
+        <div class="popup-content">
+            <h2>Admin Login</h2>
+            <label for="adminPassword">Passwort:</label><br>
+            <input type="password" id="adminPassword"><br><br>
+            <button class="button" id="adminSubmit">Einloggen</button>
+        </div>
+    </div>
     <script>
-        function addEntry() {
-            const entry = document.createElement('div');
-            entry.classList.add('cat-card');
-            entry.innerHTML = `<p>Name: <input type='text' placeholder='Name'></p>
-                               <p>Beschreibung: <input type='text' placeholder='Beschreibung'></p>
-                               <p>Bild: <input type='file'></p>`;
-            document.querySelector('.container').appendChild(entry);
-        }
+        // Cookie Popup
+        const cookiePopup = document.createElement('div');
+        cookiePopup.innerHTML = `
+            <div class="popup" id="cookiePopup" style="display: flex;">
+                <div class="popup-content">
+                    <h2>Cookies akzeptieren</h2>
+                    <p>Diese Website verwendet Cookies. Bitte akzeptieren Sie diese, um fortzufahren.</p>
+                    <button class="button" id="acceptCookies">Akzeptieren</button>
+                </div>
+            </div>
+        `;
+        document.body.prepend(cookiePopup);
+        document.getElementById("acceptCookies").onclick = function() {
+            document.getElementById("cookiePopup").remove();
+        };
+        // Add Missing Pet
+        document.getElementById("addButton").onclick = function() {
+            document.getElementById("addForm").style.display = "flex";
+        };
+        document.getElementById("finishButton").onclick = function() {
+            const name = document.getElementById("name").value;
+            const description = document.getElementById("description").value;
+            const image = document.getElementById("image").value;
+            if (name && description && image) {
+                const entry = document.createElement("div");
+                entry.classList.add("cat-card");
+                entry.innerHTML = `<h3>${name}</h3><p>${description}</p><img src="${image}" alt="${name}" style="max-width: 200px;">`;
+                document.getElementById("missingPetsList").appendChild(entry);
+                document.getElementById("addForm").style.display = "none";
+            }
+        };
+        // Admin Login
+        document.getElementById("adminButton").onclick = function() {
+            document.getElementById("adminLogin").style.display = "flex";
+        };
+        document.getElementById("adminSubmit").onclick = function() {
+            const password = document.getElementById("adminPassword").value;
+            if (password === "admin123") {
+                document.querySelectorAll(".cat-card").forEach(entry => {
+                    const deleteButton = document.createElement("button");
+                    deleteButton.innerText = "Löschen";
+                    deleteButton.classList.add("button", "deleteButtons");
+                    deleteButton.style.backgroundColor = "red";
+                    deleteButton.onclick = function() {
+                        entry.remove();
+                    };
+                    entry.appendChild(deleteButton);
+                });
+                document.getElementById("adminLogin").style.display = "none";
+            }
+        };
+        // Login Form
+        document.getElementById("loginButton").onclick = function() {
+            document.getElementById("loginForm").style.display = "flex";
+        };
+        document.getElementById("sendLogin").onclick = function() {
+            const email = document.getElementById("email").value;
+            if (email) {
+                alert(`Benachrichtigung an ${email} gesendet!`);
+                document.getElementById("loginForm").style.display = "none";
+            }
+        };
     </script>
 </body>
 </html>
