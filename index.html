@@ -3,10 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vermisste Tiere</title>
+    <title>Vermisste Katzen</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            position: relative;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #ff6666;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+        }
+        .cat-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 10px 0;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .cat-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        .cat-card img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        .cat-card h2 {
+            margin: 10px 0;
+        }
+        .cat-card p {
+            margin: 5px 0;
+        }
+        .contact-box {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .contact-box h2 {
+            color: #ff6666;
+        }
+        .contact-box p {
+            margin: 10px 0;
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #ff6666;
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
         }
         #cookie-banner {
             position: fixed;
@@ -66,17 +130,45 @@
     </style>
 </head>
 <body>
+    <header>
+        <h1>Vermisste Katzen</h1>
+    </header>
 
-    <!-- Cookie Banner -->
     <div id="cookie-banner">
         <p>Wir verwenden Cookies, um sicherzustellen, dass du die beste Erfahrung auf unserer Website machst. <button class="button" onclick="acceptCookies()">Akzeptieren</button></p>
     </div>
 
-    <!-- Main Content -->
-    <h1>Vermisste Tiere</h1>
-    <button id="add-button" class="button" onclick="showAddForm()">Hinzufügen</button>
-    <button id="admin-button" class="button" onclick="showAdminForm()">Admin</button>
-    <button id="login-button" class="button" onclick="showLoginForm()">Anmelden</button>
+    <div class="container">
+        <!-- Add Missing Cat Form Button -->
+        <button id="add-button" class="button" onclick="showAddForm()">Hinzufügen</button>
+        <button id="admin-button" class="button" onclick="showAdminForm()">Admin</button>
+        <button id="login-button" class="button" onclick="showLoginForm()">Anmelden</button>
+
+        <!-- Missing Cats List -->
+        <div id="missing-pets-list">
+            <a href="molly-details.html" target="_blank" class="cat-card">
+                <img src="katze1.jpg" alt="Bild der vermissten Katze">
+                <h2>Molly</h2>
+                <p><strong>Vermisst seit:</strong> 01. Juni 2024</p>
+                <p><strong>Ort:</strong> Berlin</p>
+                <p><strong>Beschreibung:</strong> Molly ist eine schwarz-weiße Katze, sehr zutraulich und trägt ein rotes Halsband.</p>
+            </a>
+            <a href="whiskers-details.html" target="_blank" class="cat-card">
+                <img src="katze2.jpg" alt="Bild der vermissten Katze">
+                <h2>Whiskers</h2>
+                <p><strong>Vermisst seit:</strong> 05. Juni 2024</p>
+                <p><strong>Ort:</strong> München</p>
+                <p><strong>Beschreibung:</strong> Whiskers ist eine graue Katze mit grünen Augen, etwas scheu und ohne Halsband.</p>
+            </a>
+        </div>
+
+        <!-- Contact Box -->
+        <div class="contact-box">
+            <h2>Fragen? Kontaktieren Sie uns!</h2>
+            <p><strong>Telefon:</strong> +49 12345678910</p>
+            <p><strong>Email:</strong> <a href="mailto:missingpets.vermistekatzen@gmail.com">missingpets.vermistekatzen@gmail.com</a></p>
+        </div>
+    </div>
 
     <!-- Add Form -->
     <div id="add-form">
@@ -102,8 +194,9 @@
         <button class="button" onclick="adminLogin()">Einloggen</button>
     </div>
 
-    <!-- Missing Pets List -->
-    <div id="missing-pets-list"></div>
+    <footer>
+        <p>&copy; 2024 Vermisste Katzen. Alle Rechte vorbehalten.</p>
+    </footer>
 
     <script>
         let cookiesAccepted = false;
@@ -124,7 +217,7 @@
             document.getElementById("add-form").style.display = 'block';
         }
 
-        // Add Missing Pet
+        // Add Missing Cat
         function addTier() {
             const name = document.getElementById("tier-name").value;
             const beschreibung = document.getElementById("tier-beschreibung").value;
@@ -184,10 +277,13 @@
             missingPets.forEach((pet, index) => {
                 const petDiv = document.createElement("div");
                 petDiv.innerHTML = `
-                    <h4>${pet.name}</h4>
-                    <p>${pet.beschreibung}</p>
-                    <img src="${pet.bild}" alt="Bild des Tiers" width="100">
-                    ${admin ? `<button class="button" onclick="deletePet(${index})" id="delete-button">Löschen</button>` : ''}
+                    <div class="cat-card">
+                        <img src="${pet.bild}" alt="Bild des Tiers">
+                        <h2>${pet.name}</h2>
+                        <p><strong>Vermisst seit:</strong> ${pet.beschreibung}</p>
+                        <p><strong>Ort:</strong> unbekannt</p>
+                        ${admin ? `<button class="button" onclick="deletePet(${index})" id="delete-button">Löschen</button>` : ''}
+                    </div>
                 `;
                 listContainer.appendChild(petDiv);
             });
