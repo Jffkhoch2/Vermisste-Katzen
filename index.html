@@ -138,6 +138,13 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
+        #add-pet-form input, #add-pet-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -199,10 +206,14 @@
                 <div id="add-pet-form">
                     <label>Name des vermissten Tieres:</label><br>
                     <input type="text" id="pet-name"><br><br>
+                    <label>Vermisst seit:</label><br>
+                    <input type="date" id="pet-missing-since"><br><br>
+                    <label>Ort:</label><br>
+                    <input type="text" id="pet-location"><br><br>
                     <label>Beschreibung:</label><br>
                     <textarea id="pet-description"></textarea><br><br>
-                    <label>Bild-URL:</label><br>
-                    <input type="text" id="pet-image"><br><br>
+                    <label>Bild auswählen:</label><br>
+                    <input type="file" id="pet-image" accept="image/*"><br><br>
                     <button onclick="submitPet()">Speichern</button>
                 </div>
             `;
@@ -212,15 +223,22 @@
 
         function submitPet() {
             const name = document.getElementById('pet-name').value;
+            const missingSince = document.getElementById('pet-missing-since').value;
+            const location = document.getElementById('pet-location').value;
             const description = document.getElementById('pet-description').value;
-            const imageUrl = document.getElementById('pet-image').value;
+            const imageFile = document.getElementById('pet-image').files[0];
 
-            if (name && description && imageUrl) {
+            if (name && missingSince && location && description && imageFile) {
                 const petEntry = document.createElement('div');
                 petEntry.className = 'cat-card';
+
+                const imageUrl = URL.createObjectURL(imageFile); // Temporäre URL für das Bild
+
                 petEntry.innerHTML = `
                     <h3>${name}</h3>
-                    <p>${description}</p>
+                    <p><strong>Vermisst seit:</strong> ${missingSince}</p>
+                    <p><strong>Ort:</strong> ${location}</p>
+                    <p><strong>Beschreibung:</strong> ${description}</p>
                     <img src="${imageUrl}" alt="${name}" style="max-width: 200px;">
                     <button class="delete-btn">Löschen</button>
                 `;
@@ -231,6 +249,8 @@
                 });
 
                 document.getElementById('add-pet-form').remove();
+            } else {
+                alert('Bitte füllen Sie alle Felder aus und wählen Sie ein Bild.');
             }
         }
 
